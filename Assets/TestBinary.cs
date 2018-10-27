@@ -5,12 +5,9 @@ using System.IO;
 using UnityEditor;
 using UnityEngine.UI;
 
-
-
 public class Record{
     // 浮点数是否等于零
-    public static bool IsZero(float num)
-    {
+    public static bool IsZero(float num){
         return num >= -float.Epsilon && num <= float.Epsilon;
     }
 
@@ -47,34 +44,29 @@ public class Record{
 }
 
 public class TestBinary : MonoBehaviour {
-
     string m_strProgress = "";
     float m_fProgress = 0;
-    public Texture2D emptyProgressBar; // Set this in inspector.
-    public Texture2D fullProgressBar;  // Set this in inspector.
 
     public Progress m_objProgress = null;
 
-    const string path = "./Assets/test100.dat";
-    const string output = "./Assets/saved.txt";
+    const string intPutPath = "./Assets/Z005F002.txt";
+    const string outputPath = "./Assets/saved.txt";
 
     Record[] m_kAllData = null;
 	// Use this for initialization
 	void Start () {
         StartCoroutine(StreamData());
-
-
 	}
 
     IEnumerator StreamData(){
         FileStream fs;
-        fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read);
+        fs = new FileStream(intPutPath, FileMode.OpenOrCreate, FileAccess.Read);
         BinaryReader br = new BinaryReader(fs);
 
         int index = 0;
         int length = (int)br.BaseStream.Length;
         // 一行为40个字节，包括换行
-        int recordNum = length / 40 + 1;
+        int recordNum = length / 40;
 
         Debug.LogFormat("文件流长度为{0}字节", length);
         Debug.LogFormat("总记录数{0}", recordNum);
@@ -142,10 +134,10 @@ public class TestBinary : MonoBehaviour {
             data = br.ReadSingle();
             m_kAllData[index].eighth = Record.IsZero(data) ? 0f : data;
 
-            if (index != recordNum - 1){
+            //if (index != recordNum - 1){
                 // 不是最后一行就要换行
                 br.ReadByte();    
-            }
+            //}
 
 
             index++;
@@ -185,6 +177,7 @@ public class TestBinary : MonoBehaviour {
     }
 
     void WriteFile(){
+        // 二进制写
         //FileStream fs;
         //fs = new FileStream(output, FileMode.Create, FileAccess.Write);
 
@@ -211,17 +204,21 @@ public class TestBinary : MonoBehaviour {
         //        bw.Write('\n');
         //}
 
-
-        using (StreamWriter sw = new StreamWriter(output))
-        {
-            for (int i = 0; i < m_kAllData.Length; ++i){
-                sw.WriteLine(m_kAllData[i].ToString());
-            }
-
-            sw.Flush();
-            sw.Close();
+        if (File.Exists(outputPath)){
+            File.Delete(outputPath);
         }
 
-        AssetDatabase.Refresh();
+        // 文本文件写
+        using (StreamWriter sw = new StreamWriter(outputPath))
+        {
+            for (int i = 0; i < m_kAllData.Length; ++i){
+                Debug.LogFormat("写第{0}行", i);
+
+                if (i == m_kAllData.Length - 1){
+                    int a = 0;
+                }
+                sw.WriteLine(m_kAllData[i].ToString());
+            }
+        }
     }
 }
