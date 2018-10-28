@@ -55,7 +55,6 @@ public class TestBinary : MonoBehaviour {
     Record[] m_kAllData = null;
 	// Use this for initialization
 	void Start () {
-        StartCoroutine(StreamData());
 	}
 
     IEnumerator StreamData(){
@@ -166,14 +165,31 @@ public class TestBinary : MonoBehaviour {
 
     private void OnGUI()
     {
-        GUI.Label(new Rect(0, 0, 500, 100), m_strProgress);
-
-        if (GUI.Button(new Rect(Screen.width - 200,
+        if (GUI.Button(new Rect(0,
                                 0,
                                 100,
-                                50), "save")){
+                                30), "open"))
+        {
+            ReadFile();
+        }
+
+
+
+        if (GUI.Button(new Rect(Screen.width - 100,
+                        0,
+                        100,
+                        30), "save"))
+        {
             WriteFile();
         }
+
+
+
+        GUI.Label(new Rect(Screen.width - 200, Screen.height - 100, 200, 100), m_strProgress);
+    }
+
+    void ReadFile(){
+        StartCoroutine(StreamData());
     }
 
     void WriteFile(){
@@ -213,10 +229,6 @@ public class TestBinary : MonoBehaviour {
         {
             for (int i = 0; i < m_kAllData.Length; ++i){
                 Debug.LogFormat("写第{0}行", i);
-
-                if (i == m_kAllData.Length - 1){
-                    int a = 0;
-                }
                 sw.WriteLine(m_kAllData[i].ToString());
             }
         }
