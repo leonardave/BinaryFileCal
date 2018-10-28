@@ -21,15 +21,15 @@ public class Record{
     public float eighth;
 
     public override string ToString(){
-        return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
-                             first.ToString("F4"),
-                             second.ToString("F4"),
-                             third.ToString("F4"),
-                             fourth.ToString("F4"),
-                             fifth.ToString("F4"),
-                             sixth.ToString("F4"),
-                             seventh.ToString("F4"),
-                             eighth.ToString("F4"));
+        //return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
+                             //first.ToString("F4"),
+                             //second.ToString("F4"),
+                             //third.ToString("F4"),
+                             //fourth.ToString("F4"),
+                             //fifth.ToString("F4"),
+                             //sixth.ToString("F4"),
+                             //seventh.ToString("F4"),
+                             //eighth.ToString("F4"));
 
         return string.Format("{0} {1} {2} {3} {4} {5} {6} {7}",
         first,
