@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEditor;
 using UnityEngine.UI;
+using System.Text;
 
 public class Record{
     // 浮点数是否等于零
@@ -43,6 +44,27 @@ public class Record{
     }
 }
 
+public class Node {
+    public Record[] m_kNode = null;
+
+    public Node(){
+        m_kNode = new Record[70];
+    }
+
+    public override string ToString(){
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < m_kNode.Length; ++i){
+            builder.Append(m_kNode[i].ToString());
+
+            if (i < m_kNode.Length - 1)
+                builder.Append("|");
+        }
+
+        return builder.ToString();
+    }
+}
+
 public class TestBinary : MonoBehaviour {
     string m_strProgress = "";
     float m_fProgress = 0;
@@ -52,7 +74,7 @@ public class TestBinary : MonoBehaviour {
     const string intPutPath = "./Assets/Z005F002.txt";
     const string outputPath = "./Assets/saved.txt";
 
-    Record[] m_kAllData = null;
+    Node[] m_kAllData = null;
 	// Use this for initialization
 	void Start () {
 	}
@@ -65,7 +87,7 @@ public class TestBinary : MonoBehaviour {
         int index = 0;
         int length = (int)br.BaseStream.Length;
         // 一行为40个字节，包括换行
-        int recordNum = length / 40;
+        int recordNum = length / (32 * 70);
 
         Debug.LogFormat("文件流长度为{0}字节", length);
         Debug.LogFormat("总记录数{0}", recordNum);
@@ -73,70 +95,34 @@ public class TestBinary : MonoBehaviour {
 
 
 
-        m_kAllData = new Record[recordNum];
+        m_kAllData = new Node[recordNum];
 
         while (br.BaseStream.Position != br.BaseStream.Length)
         {
-            //Debug.LogErrorFormat("{0}, {1}, {2}", index, br.BaseStream.Position, br.BaseStream.Length);
-            m_kAllData[index] = new Record();
+            m_kAllData[index] = new Node();
 
+            Debug.LogErrorFormat("{0}, {1}, {2}", index, br.BaseStream.Position, br.BaseStream.Length);
 
+            for (int i = 0; i < m_kAllData[index].m_kNode.Length; ++i){
+                m_kAllData[index].m_kNode[i] = new Record();
 
-            float data = br.ReadSingle();
-            m_kAllData[index].first = Record.IsZero(data) ? 0f : data;
-
-            // 空格
-            br.ReadByte();
-
-            data = br.ReadSingle();
-            m_kAllData[index].second = Record.IsZero(data) ? 0f : data;
-
-            // 空格
-            br.ReadByte();
-
-            data = br.ReadSingle();
-            m_kAllData[index].third = Record.IsZero(data) ? 0f : data;
-
-
-            // 空格
-            br.ReadByte();
-
-            data = br.ReadSingle();
-            m_kAllData[index].fourth = Record.IsZero(data) ? 0f : data;
-
-
-            // 空格
-            br.ReadByte();
-
-
-            data = br.ReadSingle();
-            m_kAllData[index].fifth = Record.IsZero(data) ? 0f : data;
-
-
-            // 空格
-            br.ReadByte();
-
-            data = br.ReadSingle();
-            m_kAllData[index].sixth = Record.IsZero(data) ? 0f : data;
-
-
-            // 空格
-            br.ReadByte();
-
-            data = br.ReadSingle();
-            m_kAllData[index].seventh = Record.IsZero(data) ? 0f : data;
-
-
-            // 空格
-            br.ReadByte();
-
-            data = br.ReadSingle();
-            m_kAllData[index].eighth = Record.IsZero(data) ? 0f : data;
-
-            //if (index != recordNum - 1){
-                // 不是最后一行就要换行
-                br.ReadByte();    
-            //}
+                float data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].first = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].second = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].third = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].fourth = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].fifth = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].sixth = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].seventh = Record.IsZero(data) ? 0f : data;
+                data = br.ReadSingle();
+                m_kAllData[index].m_kNode[i].eighth = Record.IsZero(data) ? 0f : data;
+            }
 
 
             index++;
@@ -145,7 +131,7 @@ public class TestBinary : MonoBehaviour {
             //third.ToString("F4"),
             //fourth.ToString("F4"));
 
-            if (index % 1000 == 0){
+            if (index % 100 == 0){
                 yield return new WaitForEndOfFrame();
             }
 
